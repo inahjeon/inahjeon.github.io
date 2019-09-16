@@ -12,12 +12,7 @@ Text Classification Tasks](https://arxiv.org/pdf/1901.11196v1.pdf) 이라는 논
 ## 1. Summary:
 
 - NLP에서 범용적으로 적용가능한 Data augmentation technique (EDA: Easy Data Augmentation)을 제안함.
-    - Synonym Replacement (SR)
-    - Random Insertion (RI)
-    - Random Swap (RS)
-    - Random Deletion (RD)
-
-- 기존에는 SR만 연구됨. RI, RS, RD는 새롭게 제안한 방법.
+- 제안한 방법 중 Synonym replacement에 대하서만 기존 연구결과가 있음. RI, RS, RD는 논문에서 새롭게 제안한 방법.
 - 실험 했던 5개의 benchmark task (classifier - `RNN`, `CNN`)에서 성능 개선이 있었고 특히 적은 샘플 데이터셋에서 효과가 있었음.
 - 전체 학습셋 중 50%의 학습셋만 가지고 100% 학습셋을 사용했을 때의 최고 성능과 동일한 정확도를 낼 수 있었음.
 
@@ -31,14 +26,13 @@ Text Classification Tasks](https://arxiv.org/pdf/1901.11196v1.pdf) 이라는 논
 
 ### Parameter n, α 설정
 - 문장의 길이에 따라 `n`이 변경되도록 문장의 길이 (`l`)을 수식에 반영함.
+- `n = αl` (`α`: 문장 내 변경되는 단어의 비율, `l`: 문장의 길이)
 - 각 문장마다 `n`개의 augmented 문장을 생성하도록 함.
 - RD에서 `p=α`
 
-> n = αl (α: 문장 내 변경되는 단어의 비율, l: 문장의 길이)
-
 ## 3. 실험방법
 
-- 5개의 benchmark text classification task 사용
+- 5개의 benchmark text classification task를 사용
     - SST-2: Stanford Sentiment Treebank ([Socher et al., 2013](https://github.com/AcademiaSinicaNLPLab/sentiment_dataset))
     - CR: customer reviews ([Hu and Liu, 2004; Liu et al., 2015](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html))
     - SUBJ: subjectivity/objectivity dataset ([Pang and Lee, 2004](http://www.cs.cornell.edu/people/pabo/movie-review-data/)
@@ -47,7 +41,7 @@ Text Classification Tasks](https://arxiv.org/pdf/1901.11196v1.pdf) 이라는 논
 
 ![](https://user-images.githubusercontent.com/16538186/64959311-d715c680-d8cb-11e9-8d29-a02b0a91f3b9.png)
 
-- Classification method
+- 사용한 Classification method
     - LSTM-RNN ([Liu et al., 2016](https://arxiv.org/pdf/1605.05101.pdf))
     - CNN ([Kim, 2014](https://www.aclweb.org/anthology/D14-1181))
 
@@ -74,21 +68,21 @@ Text Classification Tasks](https://arxiv.org/pdf/1901.11196v1.pdf) 이라는 논
 
 ![](https://user-images.githubusercontent.com/16538186/64959314-d715c680-d8cb-11e9-8025-82e2cb901285.png)
 
-- 생성된 문장의 latent vector가 동일 lable을 가진 원본 문장들과 가까운 위치에 있음을 확인할 수 있었음.
+- 생성된 문장의 latent vector가 동일 label을 가진 원본 문장들과 가까운 위치에 있음을 확인할 수 있었음.
 
 ### (4) 파라미터 α 에 대한 성능 분석
 
 ![](https://user-images.githubusercontent.com/16538186/64959316-d7ae5d00-d8cb-11e9-9177-acca412d1ca9.png)
 
-- SR은 작은 α에 대해 잘 동작했음. 너무 많은 단어를 교체하면 원래 문장과 의미가 많이 달라져서 그럴것
-- RI는 α에 대해 성능이 stable했음. 원래의 문장과 문장순서가 유지되기 때문에 그럴것
+- SR은 작은 α에 대해 잘 동작했음. 너무 많은 단어를 교체하면 원래 문장과 의미가 많이 달라져서 그럴것으로 해석함.
+- RI는 α에 대해 성능이 stable했음. 원래의 문장과 문장순서가 유지되기 때문에 그럴것으로 해석함.
 - RS는 α<0.2일때 높은 성능을 보이고 그 이후로는 줄어듦. 문장 내 단어의 순서를 너무 많이 바꾸면 성능이 떨어짐.
-- RD는 작은 α에 대해 잘 동작함
+- RD는 작은 α에 대해 잘 동작함.
 - 대체로 모든 operation들에 대해 α=0.1이 좋은 성능을 보였음.
 
 ### (5) How much augmentation? n에 대한 성능 분석
 
-- n={1, 2, 4, 8, 16, 32} 로 실험함. 
+- n={1, 2, 4, 8, 16, 32} 로 실험하여 데이터셋의 크기별 최적의 α, n 값에 대해 제시함.
 
 - 데이터 크기별 추천하는 파라미터값
 
