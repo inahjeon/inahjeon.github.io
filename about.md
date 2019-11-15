@@ -6,7 +6,7 @@ permalink: /about/
 
 ### About Me
 
-안녕하세요? 저는 [뱅크샐러드](https://banksalad.com) 서비스를 만들어 나가고 있는 `Data Scientist` 전인아입니다.
+안녕하세요? 저는 [뱅크샐러드](https://banksalad.com) 서비스를 만들어 나가고 있는 `Machine Learning Engineer` 전인아입니다.
 
 데이터마이닝 연구실에서 빅데이터 분석 연구를 하다가, 실제 세상의 데이터를 다루고 분석해 보고싶어 [레이니스트](https:/rainist.com)에 오게 되었습니다.
 
