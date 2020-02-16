@@ -10,11 +10,13 @@ ML 서비스를 Production 에 적용하기 시작하면서, CD4ML, ML Ops 에�
 
 나온지 꽤 되긴 했는데 MLOps 관련 많은 article 들에서 읽어볼 것을 추천하고 있는, [Hidden Technical Debt in Machine Learning Systems (2015): ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf) 를 찬찬히 읽어보고 적당히 의역 및 요약해보았습니다. (정확한 내용은 원문을 참고해주세요.)
 
+영어가 짧아서 논문을 읽고 저만의 언어(?)로 번역해보는 일은 시간이 꽤 걸렸지만, 그냥 슥 읽어보는 것보다 더 꼼꼼하고 깊게 읽어 보게 되어서 공부하는데 도움은 많이 되었습니다. :)
+
 ## 1. Introduction - ML 시스템에서의 기술적 부채
 
 ### [Technical Debt (기술 부채)](https://en.wikipedia.org/wiki/Technical_debt) 란? 
 
-Ward Cunningham 이 제시한 비유적 표현으로, software engineering 관점에서 기존의 시스템에 축적되어서 새로운 기능을 추가하거나, 변경 / 유지보수 할 때 이를 어렵게 만드는 요소들로, 금융에서의 `부채`와 비슷한 개념으로 바라볼 수 있습니다. 
+> Ward Cunningham 이 제시한 비유적 표현으로, software engineering 관점에서 기존의 시스템에 축적되어서 새로운 기능을 추가하거나, 변경 / 유지보수 할 때 이를 어렵게 만드는 요소들로, 금융에서의 `부채`와 비슷한 개념으로 바라볼 수 있습니다. 
 
 ~~기술 부채는 대략 다음의 한 짤로 요약됩니다...~~
 
@@ -28,7 +30,7 @@ Ward Cunningham 이 제시한 비유적 표현으로, software engineering 관�
 
 ## 2. Complex Models Erode Boundaries
 
-전통적인 소프트웨어 엔지니어닝에서는 캡슐화와 모듈 디자인를 사용한 강한 추상화 경계(abstraction boundaries)를 통해 유지보수가 가능한 코드를 만들고, 독립된 작은 변화와 개선을 만들기 쉽게 합니다. 엄격한 추상화 경계는 인풋과 아웃품에 대한 일관성을 가지게 합니다.
+전통적인 소프트웨어 엔지니어닝에서는 캡슐화와 모듈 디자인를 사용한 강한 추상화 경계(abstraction boundaries)를 통해 유지보수가 가능한 코드를 만들고, 독립된 작은 변화와 개선을 만들기 쉽게 합니다. 엄격한 추상화 경계는 인풋과 아웃풋에 대한 일관성을 가지게 합니다.
 
 그러나 ML 시스템에서는 `설계했던 동작이 외부의 데이터 의존성을 제외하고 소프트웨어 로직만으로는 효과적으로 표현 될 수 없기 때문에` 엄격한 추상화 경계를 적용하기 어렵고, 이로 인해 심각한 기술 부채를 만들 수 있습니다.
 
@@ -38,21 +40,27 @@ ML 시스템에서는 `입력값들이 서로 복잡하게 얽혀있기 때문�
 
 이 논문에서는 이러한 경우를 CASE (`Changing Anything Changes Everything`) 원칙으로 명명했습니다. CASE 원칙은 입력값에 대해서 뿐아니라, 하이퍼파라미터, 학습에 필요한 설정들, 샘플링 방법등 ML system 의 모든 가능한 작업에 적용될 수 있습니다.
 
-(해결책 TBD)
+이에 대한 해결책으로 한 가지 방법은 `모델을 독립적으로 구성하고 ensemble한 결과를 제공하는 것`입니다. Ensemble 은 문제가 sub task 들로 자연스럽게 잘 나뉘어질 수 있을 때 적용하기 좋고, 많은 케이스에서 ensemble은 잘 동작합니다. 그렇지만 ensemble 역시 모델이 얽혀있기 때문에, 개별 모델의 정확도 개선이 전체적인 시스템의 정확도를 낮추는 결과를 초래할 수 도 있습니다.
+
+두 번째 가능한 전략으로는 `발생할 수 있는 예측에 대한 변화를 감지하는 것에 주력하는 것`입니다. 고차원의 정보를 시각화 할 수 있는 도구를 활용하여, 영향들을 다양한 차원에서 나누어서 분석해볼 수 있습니다.
 
 ### Correction Cascades
 
-문제 A 를 풀기 위한 모델 m_a 가 존재할 때, 문제 A와 약간만 다른 문제 A'에 대한 해결책이 필요할 때, 빠른 해결책으로 모델 m_a를 입력값으로 하고 일부분만 재학습해서 사용하는 m_a'를 만들 수 있습니다.
+문제 A 를 풀기 위한 모델 m_a 가 존재하고 문제 A와 약간만 다른 문제 A'에 대한 모델이 필요할 때, 빠른 해결책으로 `모델 m_a의 결과를 입력으로 사용하고 일부분만 재학습하여 m_a'`를 만들 수 있습니다.
 
-그러나, 이렇게 만들어진 모델의 경우 모델 m_a에 대한 의존성을 가지고 있어 차후에 모델을 개선하기 위해 분석하는 비용이 많이 들게됩니다.
+그러나, 이렇게 만들어진 모델의 경우 모델 m_a에 대한 의존성을 가지고 있어 차후에 모델을 개선하기 위해 분석하는 비용이 많이 들게됩니다. 그리고 m_a' 모델을 활용하여 다시 문제 A''에 적용하는 식으로 correction 모델들이 쌓여서 비용이 증가하게 됩니다. 또한 이런 correction cascade 들은 deadlock 을 발생시킬 수 있는데, 개별 모델의 정확도 개선이 전체 시스템 레벨의 정확도를 오히려 낮추게 될 수 있습니다. 이에 대해서는 `feature 를 추가하여 직접적으로 correction 을 학습시키거나, 또 다른 모델 A'를 직접 개발하는 비용을 들여서 완화`할 수 있습니다.
 
-(해결책 TBD)
+> 대략 문제 별로 그냥 모델을 따로 만들어라 하는 얘기 같음.
 
 ### Undeclared Consumers
 
 > SE에서도 동일하게 발생하는 문제 같은데
 
-모델 m_a를 통한 예측 결과가 다른 시스템에서 널리 접근가능하게 만들어진 경우, 접근 제한이 없는 경우 선언하지 않은 소비자들이 모델의 출력값을 사용하게 되는 경우가 발생합니다.
+모델 m_a를 통한 예측 결과값이 다른 시스템에서 쉽게 접근가능한 경우, 접근 제한이 없으면 `선언하지 않은 소비자들이 모델의 결과값을 사용하게 되는 경우`가 발생할 수 있습니다. 전통적인 software engineering 에서는 이 문제를 `visibility debt` 라고 부릅니다.
+
+선언하지 않은 consumer들은 모델 m_a와 특정 부분과의 숨겨진 밀접한 결합을 만들기 때문에, 최선의 경우 비용이 많이 들게 되고, 최악의 경우 위험할 수 있습니다. 모델 m_a의 변화가 다른 어떤 부분에 의도하지 않은 영향을 끼칠 수 있습니다. 일반적으로 이러한 밀접한 결합은 비용을 증가시키고, 개선점을 m_a 에 적용하기 어렵게 만듭니다. 또한 이런 consumer 들은 4장에서 설명하는 숨겨진 피드백 루프를 만들 수도 있습니다.
+
+Undeclared consumer 들은 엄격한 service-level agreements (SLAs) 같은 강력한 가드 가드 없이는 감지하기 어렵습니다.
 
 ## 3. Data Dependencies Cost More than Code Dependencies
 
@@ -64,16 +72,20 @@ ML 시스템에서는 `입력값들이 서로 복잡하게 얽혀있기 때문�
 
 이에 대한 한 가지 해결 전략으로는 `데이터에 대해 versioned copy 를 만들어 데이터 의존성을 해결하는 방법`이 있습니다.
 
-> 논문에는 없지만, 지난번에 사용해보고 작성한 데이터 버전 관리 툴 [DVC](https://inahjeon.github.io/dvc/) 글 참고
+> 예전에 데이터 버전 관리 툴 [DVC](https://inahjeon.github.io/dvc/) 사용해보고 작성한 글 참고
 
 ### Underutilized Data Dependencies
 
-활용도가 낮은 데이터들.
+코드에서 underutilized dependencies는 사용되지 않는 package들을 의미합니다. 이와 유사하게, `underutilized data dependencies 는 모델에서의 이득이 거의 없는 입력값들을 의미`합니다. 이러한 입력값들은 ML system 에서 불필요하게 변화에 취약하게 만들고, 치명적으로 만들 수 있습니다.
 
-- Legacy Features
-- Bundled Features
-- ϵ-Features
-- Correlated Featuress
+Underutilized Data Dependencies는 다음의 경우에서 발생할 수 있습니다.
+
+- **Legacy Features**: 가장 흔한 경우로써, feature F가 모델의 개발단계에서 포함되었다가 시간이 지나면서 새로운 feature에 의해 불필요하게 된 경우입니다.
+- **Bundled Features**: 마감 일정에 쫓겨서 모든 feature 를 bundle로 모델에 한꺼번에 추가하는 경우인데, 특정한 feauture 들은 적은 효과가 있거나 가치가 없는 feature 일 수 있습니다.
+- **ϵ-Features**: 모델의 정확도를 개선하기 위해 아주 작은 효과를 가지지만, 시스템의 복잡도를 크게 증가시킬 수 있는 feature를 포함시키려는 경우가 있습니다.
+- **Correlated Featuress**: 두 feature 가 강한 상관관계를 보이지만, 한 가지 feature가 직접적인 원인이 되는 경우가 많습니다. 많은 ML 방법들에서 이러한 특성을 감지하는 것은 어렵고, 두 feature를 동일하게 평가하거나 심지어는 직접적인 원인이 아닌 feature 를 택하는 경우가 있습니다.
+
+Underutilized Data Dependencies 는 leave-one-feature-out 평가를 통해 감지할 수 있고, 이러한 평가는 정기적으로 수행하고 불필요한 feature 들을 제거해야 합니다.
 
 ### Static Analysis of Data Dependencies
 
@@ -99,29 +111,60 @@ Real-world ML system 에서 실제 학습이나 예측에 사용되는 "ML 코�
 
 아래에서는 이러한 ML 시스템에서 반드시 피하거나, 리팩토링 되어야하는 몇 가지 `system-design anti-pattern` 들에 대해 다룹니다.
 
-### Glue Code.
+### Glue Code
 
 ML 연구자들은 독립된 package 형식으로 솔루션을 개발하려는 경향이 있고, 오픈소스 형태로 다양하게 존재하고 있습니다. 이러한 package들을 사용하게 될 경우, 보통 이 package를 사용하기 위해 데이터 입출력을 위한 대량의 지원 코드를 작성하게 됨으로써 `glue code system design pattern` 으로 빠지게 합니다. Glue code 는 특정 package를 사용하도록 시스템을 종속시키게 되어 장기적으로는 비용이 큽니다.
 
 Glue code 문제를 해결하기 위한 한 가지 전략은 이러한 `black-box package 를 common API로 wrapping 하는 방법` 이 있습니다. Common api 로 wrapping 하면 package의 변화에 따른 비용을 줄이고, 재사용성을 더 높일 수 있습니다.
 
-### Pipeline Jungles.
+### Pipeline Jungles
 
-Glue code의 특수한 케이스로, 데이터 전처리 단계에서 `pipeline jungles` 가 발생할 수 있습니다.
+Glue code의 특수한 케이스로, 데이터 전처리 단계에서 `pipeline jungles` 가 발생할 수 있습니다. Pipeline jungles 는 새로운 입력값이 식별되거나, 새로운 데이터 소스가 추가되면서 점차 발생하게 되는데, 여기에 주의를 기울이지 않으면 중간 파일 생성, join, 샘플링 등으로 점철된 데이터 전처리 정글을 만들게 됩니다.
+
+데이터 파이프라인들을 관리하고, 에러를 감지하고, 장애로부터 복구하는 작업은 모두 어렵고 비용이 많이 듭니다. 파이프라인들을 테스트할 때에도 보통은 비용이 많이 드는 통합 테스트까지 필요로 하는 경우가 많습니다. 이런 모든 것들이 기술적인 부채를 쌓고, 혁신을 만드는 비용을 더 크게 만듭니다.
+
+데이터를 수집하고 feature 를 추출하는 데 전체적으로 잘 생각해야만 `Pipeline jungles` 을 피할 수 있습니다.   `파이프라인을 재설계하고 백지상태에서 출발`하는 방식은 실제로 현재 발생중인 비용을 줄이고, 혁신을 가속화하는데 효과적인 방식입니다.
+
+Glue code 와 pipeline jungle 현상은 `research 와 engineering 의 역할이 분리되어 있다는 점이 근본 원인`일 수 있습니다. Researcher 와 engineer 들이 같은 팀에서 하이브리드로 연구하는 방식은 이러한 문제를 해결하는데 도움이 될 수 있습니다.
 
 ### Dead Experimental Codepaths
 
+일반적으로 Glue code나 pipeline jungle 로 인해서 발생하는 결과는 단기적으로 main production code의 조건분 분기로 실험 코드를 구현하여 실험을 진행하게 되는 것입니다. 어떤 개별 변동사항에 대해 이런한 접근방식은 전체 인프라를 건드리지 않기 때문에 상대적으로 적은 비용이 듭니다. 그렇지만, 시간이 흐르면서 이러한 분기 코드들은 이전 버전과의 호환성을 유지하는데 어려움을 증가시키거나, cyclomatic complexity 를 기하급수적으로 증가시킵니다.
+
+일반적인 소프트웨어 개발의 dead flag 와 같이 주기적으로 이러한 실험용 branch 들을 제거해야합니다. 실험들 중 매우 적은 실험 셋들만 실제로 사용되고, 대부분은 한번 테스트하고 버려지게 됩니다.
+
+> 단기적으로 실험한 코드 branch들 째깍째깍 잘 정리해야함.
+
 ### Abstraction Debt
 
-### Common Smells.
+위에서 언급한 이슈들은 ML system 을 지원하기 위한 강력한 abstraction 이 없다는 사실을 강조하고 있습니다. 데이터의 흐름이나 모델, 예측을 설명하기 위한 적합한 인터페이스는 무엇일까요? 
 
-- Plain-Old-Data Type Smell.
-- Multiple-Language Smell.
-- Prototype Smell.
+> 논문에서 MR, Parameter-server 방식을 언급하긴 했지만, 특별한 해결책은 아직 없는 것 같음.
+
+### Common Smells
+
+소프트웨어 엔지니어링에서 흔히 특정 component 나 시스템에 존재하는 문제를 `smell` 이라고 표현합니다. 본 논문에서는 몇 가지 `ML system 에서의 smell` 들을 정의했습니다.
+
+- **Plain-Old-Data Type Smell**: ML system에서 사용되고 생산되는 rich 정보들은 raw float 이나 interger와 같은 타입으로 인코딩되어 있습니다.모델에서 이 정보가 의미하는 것이 무엇인지 (decision threshold 인지, log 승수인지) 명확하게 알아야하고, 데이터가 어떻게 생산되고 소비되어야하는지 알아야합니다.
+
+- **Multiple-Language Smell**: 특정 프로그래밍 언어가 특정 라이브러리나 구문을 사용하기 편리할 경우, 시스템의 한 부분만 다른 언어를 사용하려는 경우가 있습니다. 그러나 여러 개의 언어를 사용하는 것은 효과적으로 테스트 하는 비용을 증가시키고, service ownership을 넘기기 어렵게 만듭니다.
+
+- **Prototype Smell**: 새로운 아이디어를 테스트 하기위해 작은 스케일로 프로토타이핑하는 것은 편리합니다. 그렇지만 프로토타이핑 환경에 자주 의존하는 것은 full-scale 시스템이 변화에 대응하기 어렵고, 더 나은 추상화나 인터페이스가 필요하다는 것을 나타내는 지표일 수 있습니다. 프로토타이핑을 위한 환경을 유지하는 것은 비용이 들고, 시간의 압박에 쫓겨 프로토타이핑 시스템을 production 시스템에 적용하려는 시도를 부추길 수도 있습니다. 게다가 작은 스케일에서의 실험은 실제 세계의 현실을 제대로 반영하지 못하는 경우가 많습니다.
 
 ## 6. Configuration Debt
 
-(TBD)
+기술 부채가 축적될 수 있는 또 하나의 영역은 ML system 의 configuration 입니다. 대부분 대규모의 시스템에서 다양한 범위의 설정가능한 옵션 값들이 존재하고, 이러한 설정값들은 feature들을 사용하거나, 데이터를 어떻게 설정할 지, 다양한 특정 알고리즘에 특화된 설정값들, 전처리 또는 후처리 등에 대한 값들을 포함합니다.
+
+연구자들이나 엔지니어 모두 이런 설정값을 관리하는 것을 나중일로 생각하는 현상을 발견했는데, 설정값을 검증하거나 테스트하는 작업은 중요하지 않게 보일 수도 있습니다. 활발하게 개발되고 있는 성숙한 시스템에서는 설정을 위한 코드의 줄 수가, 실제 구동하는 코드의 줄 수보다 훨씬 많은 경우도 있습니다. 각각의 설정 코드들은 실수들이 잠재적으로 포함되어 있을 수 있습니다.
+
+아래는 논문에서 제시하는 좋은 configuration system 에 대한 원칙들 입니다.
+
+- 설정 값을 이전 설정값으로 부터 약간의 변경으로 쉽게 지정할 수 있어야 합니다.
+- 수동적인 에러, 생략, 누락을 만들기 어려운 구조여야합니다.
+- 두 모델 간 설정값 차이를 쉽게 시각적으로 볼 수 있어야 합니다.
+- 설정값이 자동으로 assert 되고, 기본적인 값들 (사용하는 feature의 개수, transitive closure of data dependencies 등)이 자동으로 검증되어야 합니다.
+- 사용되지 않는 불필요한 설정들을 감지할 수 있어야 합니다.
+- 설정값은 전체 코드 리뷰 과정에서 리뷰하고 확인 후, repository 에 포함되어야 합니다.
 
 ## 7. Dealing with Changes in the External World
 
@@ -145,7 +188,7 @@ ML system에서 스팸 메일인지, 정상 메일인지 예측하여 표시하�
 
 - **Action Limits**: ML system 에서 스팸 문자를 마킹하는 등의 특정 동작을 수행하는 경우, `동작에 대한 limit을 설정하는 방법`은  sanity check 로 유용합니다. 만약 시스템에서 특정 동작에 대한 limit 을 넘어서는 경우, 자동 알림을 보내서 수동적으로 검사해볼 수 있습니다.
 
-- **Up-Stream Producers**: ML system에서 입력 데이터를 다양한 up-stream producer 들로 부터 수급받게 되는 경우가 많습니다. 이러한 up-stream process 들은 ML system의 요구사항을 포함한 서비스 레벨의 목적을 달성할 수 있도록 철저하게 모니터링되고 테스트되어야 합니다. 이러한`up-stream 들의 failure에 대한 alert 또한 반드시 ML system의 control 전략에 포함되어야하고, 비슷하게 ML system 에서의 failure 역시 down-stream consumer 들에게 전파되어 down-stream consumer 들의 control 전략에 포함`되어야 합니다.
+- **Up-Stream Producers**: ML system에서 입력 데이터를 다양한 up-stream producer 들로 부터 수급받게 되는 경우가 많습니다. 이러한 up-stream process 들은 ML system의 요구사항을 포함한 서비스 레벨의 목적을 달성할 수 있도록 철저하게 모니터링되고 테스트되어야 합니다. 이러한 `up-stream 들의 failure에 대한 alert 또한 반드시 ML system의 control 전략에 포함되어야하고, 비슷하게 ML system 에서의 failure 역시 down-stream consumer 들에게 전파되어 down-stream consumer 들의 control 전략에 포함`되어야 합니다.
 
 외부의 변화는 실시간으로 일어나기 때문에, 이에 대한 반응 또한 실시간으로 발생합니다. 사람이 직접 개입해서 대응하는 것이 보통이지만, 빠르게 해결되어야하는 문제에 대해서는 취약할 수 있습니다. 사람이 직접 개입하지 않고 자동으로 변화에 대해 대응할 수 있는 시스템을 만드는 것은 투자할만한 가치가 있습니다.
 
@@ -185,5 +228,5 @@ ML research 와 engineering 사이에 큰 장벽이 있는 경우, 이러한 장
 
 정확도(accuracy)에서 작은 개선점을 얻을 수 있는 특정 research 솔루션이 전체 시스템의 복잡도을 매우 높이는 경우는 좋은 practice 가 될 수 없습니다.
 
-ML 관련된 기술 부채를 줄이기 위해서는 팀 문화를 바꾸는 차원의 특별한 노력이 필요합니다. 장기적으로 성공적인 ML팀이 되기 위해 이러한 노력에 대해 인식하고 우선순위하하고, 보상하는 것이 중요합니다.
+ML 관련된 기술 부채를 줄이기 위해서는 팀 문화를 바꾸는 차원의 특별한 노력이 필요합니다. 장기적으로 성공적인 ML팀이 되기 위해 이러한 노력에 대해 인식하고 우선순위화해서 업무를 진행하고, 이에 대해 보상하는 것이 중요합니다.
 
