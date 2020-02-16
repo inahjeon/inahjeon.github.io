@@ -58,13 +58,13 @@ ML 시스템에서는 `입력값들이 서로 복잡하게 얽혀있기 때문�
 
 모델 m_a를 통한 예측 결과값이 다른 시스템에서 쉽게 접근가능한 경우, 접근 제한이 없으면 `선언하지 않은 소비자들이 모델의 결과값을 사용하게 되는 경우`가 발생할 수 있습니다. 전통적인 software engineering 에서는 이 문제를 `visibility debt` 라고 부릅니다.
 
-선언하지 않은 consumer들은 모델 m_a와 특정 부분과의 숨겨진 밀접한 결합을 만들기 때문에, 최선의 경우 비용이 많이 들게 되고, 최악의 경우 위험할 수 있습니다. 모델 m_a의 변화가 다른 어떤 부분에 의도하지 않은 영향을 끼칠 수 있습니다. 일반적으로 이러한 밀접한 결합은 비용을 증가시키고, 개선점을 m_a 에 적용하기 어렵게 만듭니다. 또한 이런 consumer 들은 4장에서 설명하는 숨겨진 피드백 루프를 만들 수도 있습니다.
+선언하지 않은 consumer들은 모델 m_a와 특정 부분과의 숨겨진 밀접한 결합을 만들기 때문에, 작게는 (시스템 유지보수에 대한) 비용을 높이고, 최악의 경우는 위험할 수도 있습니다. 모델 m_a의 변화가 다른 어떤 부분에 의도하지 않은 영향을 끼칠 수 있습니다. 일반적으로 이러한 밀접한 결합은 비용을 증가시키고, 개선점을 m_a 에 적용하기 어렵게 만듭니다. 또한 이런 consumer 들은 4장에서 설명하는 숨겨진 피드백 루프를 만들 수도 있습니다.
 
 Undeclared consumer 들은 엄격한 `service-level agreements (SLAs)` 같은 강력한 가드 가드 없이는 감지하기 어렵습니다.
 
 ## 3. Data Dependencies Cost More than Code Dependencies
 
-전통적인 소프트웨어 엔지니어링에서 코드를 복잡하게 하고 기술 부채를 발생시키는 주요 요소로 `Dependency dept`를 꼽고 있습니다. ML 시스템에서도 이와 비슷하게 `data dependency` 가 기술 부채를 쌓고 있으며, 더 감지하기도 어렵다는 사실을 발견했습니다. 코드 의존성의 경우 compiler, linker 등 static analysis 를 통해 확인할 수 있습니다. 데이터 의존성의 경우도 의존성을 파악할 수 있는 도구가 없다면, 대규모의 해결하기 어려운 데이터 의존성을 쌓기 쉽습니다.
+전통적인 소프트웨어 엔지니어링에서 코드를 복잡하게 하고 기술 부채를 발생시키는 주요 요소로 `dependency dept`를 꼽고 있습니다. ML 시스템에서도 이와 비슷하게 기술 부채를 발생시키면서 감지하는 것도 더 어려운 `data dependency` 가 존재합니다. 코드 의존성의 경우 compiler, linker 등 static analysis 를 통해 확인할 수 있습니다. 데이터 의존성의 경우도 의존성을 파악할 수 있는 도구가 없다면, 대규모의 해결하기 어려운 데이터 의존성을 쌓기 쉽습니다.
 
 ### Unstable Data Dependencies
 
@@ -81,7 +81,7 @@ Undeclared consumer 들은 엄격한 `service-level agreements (SLAs)` 같은 �
 Underutilized Data Dependencies는 다음의 경우에서 발생할 수 있습니다.
 
 - **Legacy Features**: 가장 흔한 경우로써, feature F가 모델의 개발단계에서 포함되었다가 시간이 지나면서 새로운 feature에 의해 불필요하게 된 경우입니다.
-- **Bundled Features**: 마감 일정에 쫓겨서 모든 feature 를 bundle로 모델에 한꺼번에 추가하는 경우인데, 특정한 feauture 들은 적은 효과가 있거나 가치가 없는 feature 일 수 있습니다.
+- **Bundled Features**: 보통 마감 일정에 쫓겨서 모든 feature 를 bundle로 모델에 한꺼번에 추가하는 경우 발생하는데, 이때 특정 feauture 들은 적은 효과가 있거나 가치가 없는 feature 일 수 있습니다.
 - **ϵ-Features**: 모델의 정확도를 개선하기 위해 아주 작은 효과를 가지지만, 시스템의 복잡도를 크게 증가시킬 수 있는 feature를 포함시키려는 경우가 있습니다.
 - **Correlated Featuress**: 두 feature 가 강한 상관관계를 보이지만, 한 가지 feature가 직접적인 원인이 되는 경우가 많습니다. 많은 ML 방법들에서 이러한 특성을 감지하는 것은 어렵고, 두 feature를 동일하게 평가하거나 심지어는 직접적인 원인이 아닌 feature 를 택하는 경우가 있습니다.
 
@@ -107,7 +107,7 @@ Live ML 시스템에서 한 가지 중요한 특성은 `시간이 흐름에 따�
 
 ![](https://user-images.githubusercontent.com/16538186/74599412-be9d1880-50c4-11ea-919b-8d0971757405.png)
 
-**Real-world ML system 에서 실제 학습이나 예측에 사용되는 "ML 코드"가 차지하는 비중은 매우 적고, ML system 을 위한 요구되는 인프라는 매우 복잡합니다.**
+**Real-world ML system 에서 실제 학습이나 예측에 사용되는 "ML 코드"가 차지하는 비중은 매우 적고, ML system 을 위해 요구되는 인프라는 매우 복잡합니다.**
 
 > 매우 진리이다. 한 백 번쯤 강조해야 한다.
 
