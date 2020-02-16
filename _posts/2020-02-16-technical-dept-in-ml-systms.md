@@ -8,7 +8,7 @@ comments: true
 
 ML 서비스를 Production 에 적용하기 시작하면서, CD4ML, ML Ops 에도 관심이 많이 생겨서 차근차근 공부해보려고 합니다.
 
-나온지 꽤 되긴 했는데 MLOps 관련 많은 article 들에서 읽어볼 것을 추천하고 있는, [Hidden Technical Debt in Machine Learning Systems (2015): ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf) 를 찬찬히 읽어보고 적당히 의역 및 요약해보았습니다. (정확한 내용은 원문을 참고해주세요.)
+나온지 꽤 되긴 했는데 MLOps 관련 많은 article 들에서 읽어볼 것을 추천하고 있는, [Hidden Technical Debt in Machine Learning Systems (2015)](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf)(ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문) 를 찬찬히 읽어보고 적당히 의역 및 요약해보았습니다. (정확한 내용은 원문을 참고해주세요.)
 
 영어가 짧아서 논문을 읽고 저만의 언어(?)로 번역해보는 일은 시간이 꽤 걸렸지만, 그냥 슥 읽어보는 것보다 더 꼼꼼하고 깊게 읽어 보게 되어서 공부하는데 도움은 많이 되었습니다. :)
 
@@ -22,15 +22,15 @@ ML 서비스를 Production 에 적용하기 시작하면서, CD4ML, ML Ops 에�
 
 ![](https://miro.medium.com/max/863/1*55Jn564sqMdKT39XIW3uxQ.png)
 
-소프트웨어 엔지니어링에서와 마찬가지로 라이브 시스템에 ML 을 적용하기 시작하면서 ML system 에서도 `개발과 배포에 걸리는 시간은 상대적으로 빠르고 저렴하지만, 이를 유지보수하는 것은 어렵고 비용이 많이 들게되는` 현상이 광범위하게 발생하고 있습니다.
+Software engineering에서와 마찬가지로 라이브 시스템에 ML 을 적용하기 시작하면서 ML system 에서도 **개발과 배포에 걸리는 시간은 상대적으로 빠르고 저렴하지만, 이를 유지보수하는 것은 어렵고 비용이 많이 들게되는** 현상이 광범위하게 발생하고 있습니다.
 
-특히 ML system 에서는 `전통적인 코드를 유지 보수하는 문제에 추가로 ML에 특정된 이슈들로 인한 기술적 부채들도 발생`합니다. 그런데 이런 기술 부채들은 코드 레벨보다는 시스템 레벨에 존재하기 때문에 감지하기 어렵습니다. ML 시스템에서 코드 외 `시스템에서 흘러가는 데이터` 때문에 전통적인 추상화 경계(abstraction boundaries)가 깨지기 쉽고, 코드 레벨의 기술부채를 갚는 전형적인 방법들 (e.g. 리팩토링, 테스트코드 작성 등)로는 ML system의 부채를 해결하는데 충분하지 않습니다.
+특히 ML system 에서는 **전통적인 코드를 유지 보수하는 문제에 추가로 ML에 특정된 이슈들로 인한 기술적 부채들도 발생**합니다. 그런데 이런 기술 부채들은 코드 레벨보다는 **시스템 레벨에 존재**하기 때문에 감지하기 어렵습니다. ML 시스템에서 코드 외 **시스템에서 흘러가는 데이터** 때문에 전통적인 추상화 경계(abstraction boundaries)가 깨지기 쉽고, 코드 레벨의 기술부채를 갚는 전형적인 방법들 (e.g. 리팩토링, 테스트코드 작성 등)로는 ML system의 부채를 해결하는데 충분하지 않습니다.
 
 이 논문에서는 ML 기술 부채가 빠르게 축적될 수 있는 ML system 내의 시스템 레벨의 상호작용과 인터페이스에 집중하여 ML 기술 부채를 발생시키는 요소들에 대해 제시하고 있습니다.
 
 ## 2. Complex Models Erode Boundaries
 
-전통적인 소프트웨어 엔지니어닝에서는 캡슐화와 모듈 디자인를 사용한 강한 추상화 경계(abstraction boundaries)를 통해 유지보수가 가능한 코드를 만들고, 독립된 작은 변화와 개선을 만들기 쉽게 합니다. 엄격한 추상화 경계는 인풋과 아웃풋에 대한 일관성을 가지게 합니다.
+전통적인 software engineering에서는 캡슐화(encapsulation)와 모듈 디자인(modular design)를 사용한 강한 추상화 경계(abstraction boundaries)를 통해 유지보수가 가능한 코드를 만들고, 독립된 작은 변화와 개선을 만들기 쉽게 합니다. 엄격한 추상화 경계는 인풋과 아웃풋에 대한 일관성을 가지게 합니다.
 
 그러나 ML 시스템에서는 `설계했던 동작이 외부의 데이터 의존성을 제외하고 소프트웨어 로직만으로는 효과적으로 표현 될 수 없기 때문에` 엄격한 추상화 경계를 적용하기 어렵고, 이로 인해 심각한 기술 부채를 만들 수 있습니다.
 
