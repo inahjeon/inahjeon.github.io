@@ -8,19 +8,19 @@ comments: true
 
 ML 서비스를 Production 에 적용하기 시작하면서, CD4ML, ML Ops 에도 관심이 많이 생겨서 차근차근 공부해보려고 합니다.
 
-나온지 꽤 되긴 했는데 ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문인 [Hidden Technical Debt in Machine Learning Systems (2015)](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf) 찬찬히 읽어보고 요약했습니다.
+나온지 꽤 되긴 했는데 MLOps 관련 많은 article 에서 읽어볼 것을 추천하고 있는, [Hidden Technical Debt in Machine Learning Systems (2015): ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf) 를 찬찬히 읽어보고 적당히 의역 및 요약해보았습니다. 정확한 내용은 원문을 참고해주세요.
 
 ## 1. Introduction - ML 시스템에서의 기술적 부채
 
 ["Technical Debt" (기술 부채)]((https://en.wikipedia.org/wiki/Technical_debt)) 란?
 
-Ward Cunningham 이 제시한 metaphor로, 대략 다음의 한 짤로 요약됩니다...
+Ward Cunningham 이 제시한 비유적 표현으로, 대략 다음의 한 짤로 요약됩니다...
 
 ![](https://miro.medium.com/max/863/1*55Jn564sqMdKT39XIW3uxQ.png)
 
-~~언제까지 네모난 바퀴로 갈텐가...~~
+(~~언제까지 네모난 바퀴로 갈텐가...~~)
 
-소프트웨어 엔지니어링에서와 마찬가지로 라이브 시스템에 적용되는 ML 시스템에서도 `개발과 배포에 걸리는 시간은 상대적으로 빠르고 저렴하지만, 이를 유지보수하는 것은 어렵고 비용이 많이 들게되는` 현상이 광범위하게 발생하고 있습니다.
+소프트웨어 엔지니어링에서와 마찬가지로 라이브 시스템에 ML 을 적용하기 시작하면서 ML system 에서도 `개발과 배포에 걸리는 시간은 상대적으로 빠르고 저렴하지만, 이를 유지보수하는 것은 어렵고 비용이 많이 들게되는` 현상이 광범위하게 발생하고 있습니다.
 
 특히 ML system 에서는 `전통적인 코드를 유지 보수하는 문제에 추가로 ML에 특정된 이슈들로 인한 기술적 부채들도 발생`합니다. 그런데 이런 기술 부채들은 코드 레벨보다는 시스템 레벨에 존재하기 때문에 감지하기 어렵습니다. ML 시스템에서 코드 외 `시스템에서 흘러가는 데이터` 때문에 전통적인 추상화 경계(abstraction boundaries)가 깨지기 쉽고, 코드 레벨의 기술부채를 갚는 전형적인 방법들 (e.g. 리팩토링, 테스트코드 작성 등)로는 ML system의 부채를 해결하는데 충분하지 않습니다.
 
@@ -34,7 +34,7 @@ Ward Cunningham 이 제시한 metaphor로, 대략 다음의 한 짤로 요약됩
 
 ### Entanglement
 
-ML 시스템에서는 신호들을 섞고 얽기 때문에, 독립적인 개선을 하기 어렵습니다. 예를 들어 x_1, ... , x_n 의 feature를 사용하는 모델에서 만약 x_1 의 입력 분포를 바꾸는 경우, 나머지 모든 n-1개의 feature 들의 가중치, 사용 여부 등이 모두 바뀌게 됩니다. 새로운 n+1 번째 feature 를 추가하거나, 특정 feature x_j 를 제거하는 경우도 마찬가지 입니다.
+ML 시스템에서는 입력값들이 서로 복잡하게 얽혀있기 때문에, 독립적으로 개선 하기 어렵습니다. 예를 들어 x_1, ... , x_n 의 feature를 사용하는 모델에서 만약 x_1 의 입력 분포를 바꾸는 경우, 나머지 모든 n-1개의 feature 들의 가중치, 사용 여부 등이 모두 바뀌게 됩니다. 새로운 n+1 번째 feature 를 추가하거나, 특정 feature x_j 를 제거하는 경우도 마찬가지 입니다.
 
 이 논문에서는 이러한 경우를 CASE (`Changing Anything Changes Everything`) 원칙으로 명명했습니다. CASE 원칙은 입력값에 대해서 뿐아니라, 하이퍼파라미터, 학습에 필요한 설정들, 샘플링 방법등 ML system 의 모든 가능한 작업에 적용될 수 있습니다.
 
@@ -62,7 +62,7 @@ ML 시스템에서는 신호들을 섞고 얽기 때문에, 독립적인 개선�
 
 이에 대한 한 가지 해결 전략으로는 데이터에 대해 versioned copy 를 만들어 데이터 의존성을 해결하는 방법이 있습니다.
 
-- 논문에는 없지만, 지난번에 사용해보고 작성한 데이터 버전 관리 툴 [DVC](https://inahjeon.github.io/dvc/) 글 참고
+> 논문에는 없지만, 지난번에 사용해보고 작성한 데이터 버전 관리 툴 [DVC](https://inahjeon.github.io/dvc/) 글 참고
 
 ### Underutilized Data Dependencies
 
@@ -75,11 +75,11 @@ ML 시스템에서는 신호들을 섞고 얽기 때문에, 독립적인 개선�
 
 ### Static Analysis of Data Dependencies
 
-전통적인 코드에서는 컴파일러와 빌드 시스템에서 의존성 그래프에 대해 정적 검사를 수행할 수 있습니다. 데이터 의존성에 대한 정적 분석 도구는 비교적으로 적고, 자동화된 feature 관리 같은 도구를 예를 들 수 있습니다.
+전통적인 코드에서는 컴파일러와 빌드 시스템에서 의존성 그래프에 대해 정적 검사를 수행할 수 있습니다. 데이터 의존성에 대한 정적 분석 도구는 자동화된 feature 관리 같은 도구를 예를 들 수 있고, 아직 그리 많이 있지는 않습니다.
 
 ## 4. Feedback Loops
 
-Live ML 시스템에서 한 가지 중요한 특성은 시간이 흐름에 따라 그들의 행동이 모델에 영향을 끼치게 되는 것입니다. 이러한 특성은 모델이 배포되기 전에는 시스템이 어떻게 동작할 지 예측하기 어려운 analysys debt 를 발생시킬 수 있습니다.
+Live ML 시스템에서 한 가지 중요한 특성은 `시간이 흐름에 따라 시스템의 동작이 다시 모델에 영향을 끼치게 되는 것`입니다. 이러한 특성은 모델이 배포되기 전에는 시스템이 어떻게 동작할 지 예측하기 어려운 `analysys debt` 를 발생시킬 수 있습니다.
 
 (모델이 데이터에 영향을 끼치고, 다시 그 데이터가 모델에 영향을 끼치는 건가 봉가)
 
@@ -97,7 +97,13 @@ Real-world ML system 에서 실제 학습이나 예측에 사용되는 "ML 코�
 
 ### Glue Code.
 
+ML 연구자들은 독립된 package 형식으로 솔루션을 개발하려는 경향이 있고, 오픈소스 형태로 다양하게 존재하고 있습니다. 이러한 package들을 사용하게 될 경우, 보통 이 package를 사용하기 위해 데이터 입출력을 위한 대량의 지원 코드를 작성하게 됨으로써 `glue code system design pattern` 으로 빠지게 합니다. Glue code 는 특정 package를 사용하도록 시스템을 종속시키게 되어 장기적으로는 비용이 큽니다.
+
+Glue code 문제를 해결하기 위한 한 가지 전략은 이러한 `black-box package 를 common API로 wrapping 하는 방법` 이 있습니다. Common api 로 wrapping 하면 package의 변화에 따른 비용을 줄이고, 재사용성을 더 높일 수 있습니다.
+
 ### Pipeline Jungles.
+
+Glue code의 특수한 케이스로, 데이터 전처리 단계에서 `pipeline jungles` 가 발생할 수 있습니다.
 
 ### Dead Experimental Codepaths
 
@@ -111,22 +117,59 @@ Real-world ML system 에서 실제 학습이나 예측에 사용되는 "ML 코�
 
 ## 6. Configuration Debt
 
+???
+
 ## 7. Dealing with Changes in the External World
+
+ML system 이 매력적인 한 가지 이유는 외부 세계와 직접적으로 상호작용한다는 것입니다. 경험적으로, 외부 세계는 안정적인 경우가 매우 드물기 때문에, 외부 환경에 대한 변화로 인한 유지보수 비용이 지속적으로 발생합니다.
 
 ### Fixed Thresholds in Dynamic Systems.
 
+ML system에서 스팸 메일인지, 정상 메일인지 예측하여 표시하거나, 특정 광고를 유저에게 표시할 지 말지 등 특정 ML 모델이 어떤 동작을 수행하게 하기 위해 `decision threshold` 값 를 선택하는 경우가 많습니다. 한 가지 전통적인 방법은 가능한 임계값 범위 내에서 precision / recall 과 같은 tradeoffs 를 고려하여 하나 택하는 방법이 있습니다. 
+
+그런데 이러한 `임계값들을 대부분 수동적으로 설정하는 경우`가 많습니다. 만약 모델이 새로운 데이터를 입력으로 받게되는 경우, 기존의 수동적으로 설정한 임계값은 유효하지 않을 수 있습니다. 또한, 많은 모델들의 임계값들을 수동으로 변경하는 일은 시간이 오래걸리고 다루기 힘든 작업입니다.
+
+이러한 문제를 해결하기 위한 한 가지 전략은, `검증 데이터 셋을 통해 임계값을 학습하게 하는 방식` 을 사용할 수 있습니다.
+
 ### Monitoring and Testing.
+
+- Prediction Bias. 
+- Action Limits.
+- Up-Stream Producers.
 
 ## 8. Other Areas of ML-related Debt
 
+그 밖에 ML 관련 기술 부채들에 대한 내용입니다.
+
 ### Data Testing Debt.
+
+데이터가 ML system 의 코드를 변경시키는 경우, 해당 코드에 대해서 반드시 테스트하고, 입력 데이터 또한 테스트하는 것은 매우 당연합니다. `기본적인 sanity 체크 및 입력 값의 분포의 변화에 대해 모니터링하기 위한 잘 설계된 테스트` 가 유용하게 쓰일 수 있습니다.
 
 ### Reproducibility Debt.
 
+Scientist 로써, 실험을 다시 수행하고 `비슷한` 결과물을 얻는 것은 중요합니다. 그러나 real-world ML system 에서 Randomized 알고리즘의 사용, 초기 조건에 따른 의존성 등의 문제로 `strict reproducibility` 를 가지도록 설계하는 것은 더욱 더 어렵습니다.
+
 ### Process Management Debt.
+
+이 논문에 소개된 대부분의 사례들은 한 가지 모델을 유지보수 하기 위한 비용에 대해 말하고 있습니다. 그러나 성숙한 시스템의 경우는 수 십, 수 백개의 모델들이 동시에 실행됩니다. 이런 성숙한 시스템의 경우, `많은 비슷한 모델들의 congifuration 값들을 안전하게 자동적으로 변경하는 문제`, `비즈니스 우선순위가 다른 모델등 사이에서 리소스를 할당하고 조율하는 문제`, `production 데이터 파이프라인의 흐름을 시각화하고 blocker 들을 감지하는 문제` 등 넓은 범위에 걸쳐 해결해야 할 다양하고 중요한 문제들이 있습니다. 또한, `장애 시 복구를 위한 tool을 개발`하는 것도 매우 중요합니다.
 
 ### Cultural Debt.
 
+ML research 와 engineering 사이에 큰 장벽이 있는 경우, 이러한 장벽은 장기적인 관점에서 생산성을 저하시킬 수 있습니다. `팀 차원에서 쓸모없는 feature 의 개수를 줄이고, 시스템의 복잡도를 낮추고, 재현성과 안정성을 개선하고, 시스템을 모니터링하는 것에 대해 보상하는 문화를 만드는 것이 중요` 합니다.
+
 ## 9. Conclusions: Measuring Debt and Paying it Off
 
+기술 부채는 유용한 표현이지만, 기술적 부채에 대해 측정할 수 있는 구체적인 metric 까지는 제시하고 있지 않습니다. 다음과 같은 질문들을 통해 기술적 부채가 얼마나 존재하는지 대략적으로 파악해 볼 수 있습니다.
+
+> - 새로운 알고리즘적 접근이 얼마나 쉽게 full scale 에서 테스트 가능한가?
+> - What is the transitive closure of all data dependencies? (~~무슨 말인지 모르겠음~~)
+> - 시스템에 적용되는 새로운 변화에 대한 임팩트를 얼마나 정확하게 측정할 수 있는지?
+> - 특정 모델이나 입력값에 대한 개선이 다른 것들의 성능을 저하시키는지?
+> - 새로운 팀 멤버가 얼마나 빨리 업무에 적응할 수 있는가?
+
+이 논문을 통해 유지보수 가능한 ML 시스템 개발을 위한 더 나은 추상화, 테스팅 기법, 디자인 패턴들이 나오길 바라고, 논문에서 제시하는 가장 중요한 시사점은 `engineer 와 researcher 모두 기술 부채에 대해 경계하고 고민해야한다는 점` 입니다. 
+
+정확도(accuracy)에서 작은 개선점을 얻을 수 있는 특정 research 솔루션이 전체 시스템의 복잡도을 매우 높이는 경우는 좋은 practice 가 될 수 없습니다.
+
+ML 관련된 기술 부채를 줄이기 위해서는 팀 문화를 바꾸는 차원의 특별한 노력이 필요합니다. 장기적으로 성공적인 ML팀이 되기 위해 이러한 노력에 대해 인식하고 우선순위하하고, 보상하는 것이 중요합니다.
 
