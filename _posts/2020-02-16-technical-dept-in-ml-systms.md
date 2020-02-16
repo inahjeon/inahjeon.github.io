@@ -60,7 +60,7 @@ ML 시스템에서는 `입력값들이 서로 복잡하게 얽혀있기 때문�
 
 선언하지 않은 consumer들은 모델 m_a와 특정 부분과의 숨겨진 밀접한 결합을 만들기 때문에, 최선의 경우 비용이 많이 들게 되고, 최악의 경우 위험할 수 있습니다. 모델 m_a의 변화가 다른 어떤 부분에 의도하지 않은 영향을 끼칠 수 있습니다. 일반적으로 이러한 밀접한 결합은 비용을 증가시키고, 개선점을 m_a 에 적용하기 어렵게 만듭니다. 또한 이런 consumer 들은 4장에서 설명하는 숨겨진 피드백 루프를 만들 수도 있습니다.
 
-Undeclared consumer 들은 엄격한 service-level agreements (SLAs) 같은 강력한 가드 가드 없이는 감지하기 어렵습니다.
+Undeclared consumer 들은 엄격한 `service-level agreements (SLAs)` 같은 강력한 가드 가드 없이는 감지하기 어렵습니다.
 
 ## 3. Data Dependencies Cost More than Code Dependencies
 
@@ -85,7 +85,7 @@ Underutilized Data Dependencies는 다음의 경우에서 발생할 수 있습�
 - **ϵ-Features**: 모델의 정확도를 개선하기 위해 아주 작은 효과를 가지지만, 시스템의 복잡도를 크게 증가시킬 수 있는 feature를 포함시키려는 경우가 있습니다.
 - **Correlated Featuress**: 두 feature 가 강한 상관관계를 보이지만, 한 가지 feature가 직접적인 원인이 되는 경우가 많습니다. 많은 ML 방법들에서 이러한 특성을 감지하는 것은 어렵고, 두 feature를 동일하게 평가하거나 심지어는 직접적인 원인이 아닌 feature 를 택하는 경우가 있습니다.
 
-Underutilized Data Dependencies 는 leave-one-feature-out 평가를 통해 감지할 수 있고, 이러한 평가는 정기적으로 수행하고 불필요한 feature 들을 제거해야 합니다.
+`Underutilized Data Dependencies 는 leave-one-feature-out 평가를 통해 감지`할 수 있고, 이러한 평가는 정기적으로 수행하고 불필요한 feature 들을 제거해야 합니다.
 
 ### Static Analysis of Data Dependencies
 
@@ -129,9 +129,9 @@ Glue code 와 pipeline jungle 현상은 `research 와 engineering 의 역할이 
 
 ### Dead Experimental Codepaths
 
-일반적으로 Glue code나 pipeline jungle 로 인해서 발생하는 결과는 단기적으로 main production code의 조건분 분기로 실험 코드를 구현하여 실험을 진행하게 되는 것입니다. 어떤 개별 변동사항에 대해 이런한 접근방식은 전체 인프라를 건드리지 않기 때문에 상대적으로 적은 비용이 듭니다. 그렇지만, 시간이 흐르면서 이러한 분기 코드들은 이전 버전과의 호환성을 유지하는데 어려움을 증가시키거나, cyclomatic complexity 를 기하급수적으로 증가시킵니다.
+일반적으로 Glue code나 pipeline jungle 로 인해서 발생하는 결과는 `단기적으로 main production code의 조건분 분기로 실험 코드를 구현하여 실험을 진행하게 되는 것`입니다. 어떤 개별 변동사항에 대해 이런한 접근방식은 전체 인프라를 건드리지 않기 때문에 상대적으로 적은 비용이 듭니다. 그렇지만, 시간이 흐르면서 이러한 분기 코드들은 이전 버전과의 호환성을 유지하는데 어려움을 증가시키거나, cyclomatic complexity 를 기하급수적으로 증가시킵니다.
 
-일반적인 소프트웨어 개발의 dead flag 와 같이 주기적으로 이러한 실험용 branch 들을 제거해야합니다. 실험들 중 매우 적은 실험 셋들만 실제로 사용되고, 대부분은 한번 테스트하고 버려지게 됩니다.
+일반적인 소프트웨어 개발의 dead flag 와 같이 `주기적으로 이러한 실험용 branch 들을 제거`해야합니다. 실험들 중 매우 적은 실험 셋들만 실제로 사용되고, 대부분은 한번 테스트하고 버려지게 됩니다.
 
 > 단기적으로 실험한 코드 branch들 째깍째깍 잘 정리해야함.
 
