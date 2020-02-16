@@ -6,7 +6,7 @@ tags: [공부, machine learning, mlops]
 comments: true
 ---
 
-ML 서비스를 Production 에 적용하기 시작하면서, CD4ML, ML Ops 에도 관심이 많이 생겨서 차근차근 공부해보려고 합니다.
+ML 서비스를 Production 에 적용하기 시작하면서, [CD4ML](https://martinfowler.com/articles/cd4ml.html), ML Ops 에도 관심이 많이 생겨서 차근차근 공부해보려고 합니다.
 
 나온지 꽤 되긴 했는데 MLOps 관련 많은 article 들에서 읽어볼 것을 추천하고 있는, [Hidden Technical Debt in Machine Learning Systems (2015)](https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf)(ML system 에서의 기술 부채에 대해 Google 에서 작성한 유명한 논문) 를 찬찬히 읽어보고 적당히 의역 및 요약해보았습니다. (정확한 내용은 원문을 참고해주세요.)
 
