@@ -2,7 +2,7 @@
 layout: post
 title:  "Data imbalance summary"
 date:   2019-09-16 12:46:00
-tags: [공부, data science, data imbalance, SMOTE, sampling]
+tags: [ml]
 comments: true
 ---
 

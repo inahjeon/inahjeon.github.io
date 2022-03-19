@@ -2,7 +2,7 @@
 layout: post
 title:  "Ensemble 요약"
 date:   2019-09-10 02:06:00
-tags: [공부, data science, ensemble, 앙상블, bagging, boosting, stacking]
+tags: [ml]
 comments: true
 ---
 

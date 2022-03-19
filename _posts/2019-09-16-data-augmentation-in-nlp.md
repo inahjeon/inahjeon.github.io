@@ -2,7 +2,7 @@
 layout: post
 title:  "Data augmentation in text classification"
 date:   2019-09-16 21:40:00
-tags: [공부, data science, data augmentation, text, classification, nlp]
+tags: [nlp]
 comments: true
 ---
 

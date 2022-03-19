@@ -2,7 +2,7 @@
 layout: post
 title:  "코로나로 인해 재택근무를 하며 느낀점"
 date:   2020-03-01 18:23:00
-tags: [diary, work from home]
+tags: [diary]
 comments: true
 ---
 

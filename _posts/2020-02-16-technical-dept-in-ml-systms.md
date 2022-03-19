@@ -2,7 +2,7 @@
 layout: post
 title:  "Hidden Technical Debt in Machine Learning Systems"
 date:   2020-02-16 18:47:00
-tags: [공부, machine learning, mlops]
+tags: [ml & data engineering]
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "CloudML Engine으로 모델 학습부터 배포까지"
 date:   2019-01-14 01:37:00
-tags: [gcp, cloud-ml-engine]
+tags: [ml & data engineering]
 comments: true
 ---
 

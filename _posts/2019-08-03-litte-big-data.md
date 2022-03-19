@@ -2,7 +2,7 @@
 layout: post
 title:  "Little Big Data"
 date:   2019-08-03 16:34:00
-tags: [Little big data]
+tags: [conference]
 comments: true
 ---
 

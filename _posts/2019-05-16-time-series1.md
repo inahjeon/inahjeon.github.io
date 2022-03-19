@@ -2,7 +2,7 @@
 layout: post
 title:  "Time Series Analysis & Forecasting (1)"
 date:   2019-05-16 02:45:00
-tags: [공부, data science, timeseries, forecasting, seasonality, trend, 시계열]
+tags: [ds]
 comments: true
 ---
 

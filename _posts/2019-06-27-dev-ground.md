@@ -2,7 +2,7 @@
 layout: post
 title:  "DevGround 2019 세션 요약"
 date:   2019-06-27 18:45:00
-tags: [data science, 데이터 분석, 데브그라운드2019]
+tags: [conference]
 comments: true
 ---
 

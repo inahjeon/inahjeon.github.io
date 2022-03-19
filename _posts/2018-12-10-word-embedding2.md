@@ -2,7 +2,7 @@
 layout: post
 title:  "Word Embeddings 2"
 date:   2018-12-10 01:49:00
-tags: [공부, data science, nlp]
+tags: [nlp]
 comments: true
 ---
 
