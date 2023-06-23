@@ -6,7 +6,7 @@ permalink: /about/
 
 ### About Me
 
-안녕하세요? 저는 [뱅크샐러드](https://banksalad.com) 서비스를 만들어 나가고 있는 `Server Engineer` 전인아입니다.
+안녕하세요? 저는 [Upstage](https://www.upstage.ai) 에서 `Software Engineer` 로 일하고 있는 전인아입니다.
 
 세상을 변화시키는 좋은 제품을 만드는 엔지니어로 일하는데 보람을 느끼고, 데이터를 통해서 직접적인 비즈니스 가치를 만드는 일에 관심이 많습니다. :)
 
